@@ -1,0 +1,116 @@
+{
+    "chart": [
+        {
+            "id": "10202000001",
+            "type": "bar",
+            "title": "Personally Identifiable Information",
+            "subtitle": "",
+            "items":[
+           { "id":"900005", "name":"Mobile", "value":"2026"},
+           { "id":"900007", "name":"WeChat", "value":"1215"},
+           { "id":"900009", "name":"Email", "value":"60"},
+           { "id":"9000011", "name":"Address", "value":"526"}
+                    ]
+        },
+        {
+            "id": "10202000002",
+            "type": "bar",
+            "title": "Age",
+            "subtitle": "",
+            "items":[
+           { "id":"9000022", "name":"Teenager(15-18)", "value":""},
+           { "id":"9000024", "name":"College Student(19-22)", "value":""},
+           { "id":"9000026", "name":"Fresher to Society(23-25)", "value":""},
+           { "id":"9000028", "name":"Independent (26-35)", "value":""},
+           { "id":"9000030", "name":"Matured (36-45)", "value":""},
+           { "id":"9000032", "name":"Middle Age Glory (46-55)", "value":""},
+           { "id":"9000034", "name":"Conformable Retiree (56-65)", "value":""},
+           { "id":"9000036", "name":"Out of Range (<15 or >65)", "value":""},
+           { "id":"9000038", "name":"Unknown", "value":""}
+                    ]
+        },
+        {
+            "id": "10202000003",
+            "type": "pie",
+            "title": "Gender",
+            "subtitle": "",
+            "items":[
+           { "id":"9000041", "name":"Female", "value":""},
+           { "id":"9000043", "name":"Male", "value":""},
+           { "id":"9000045", "name":"Unknown", "value":""}
+                    ]
+        },
+        {
+            "id": "10202000004",
+            "type": "pie",
+            "title": "City Tier",
+            "subtitle": "",
+            "items":[
+           { "id":"90000121", "name":"Tier 1", "value":""},
+           { "id":"90000123", "name":"Tier 2", "value":""},
+           { "id":"90000125", "name":"Tier 3", "value":""},
+           { "id":"90000127", "name":"Tier 4", "value":""},
+           { "id":"90000129", "name":"Tier 5", "value":""}
+                    ]
+        },
+        {
+            "id": "10202000005",
+            "type": "bar",
+            "title": "Function",
+            "subtitle": "",
+            "items":[
+           { "id":"90000282", "name":"Youth Seeker ", "value":""},
+           { "id":"90000284", "name":"Wrinkle Cure", "value":""},
+           { "id":"90000286", "name":"Young Maintenance", "value":""},
+           { "id":"90000288", "name":"Whitening Princess", "value":""},
+           { "id":"90000290", "name":"Energy Skin ", "value":""},
+           { "id":"90000292", "name":"UV Protection ", "value":""},
+           { "id":"90000294", "name":"Perfect Skin", "value":""},
+           { "id":"90000296", "name":"Barbie Eyes", "value":""},
+           { "id":"90000298", "name":"Sexy Lip", "value":""},
+           { "id":"90000300", "name":"Hair Carer", "value":""}
+                    ]
+        },
+        {
+            "id": "10202000006",
+            "type": "bar",
+            "title": "Member Active Level",
+            "subtitle": "",
+            "items":[
+           { "id":"90000660", "name":"New Repeat Member", "value":""},
+           { "id":"90000662", "name":"New Unrepeated Member ", "value":""},
+           { "id":"90000664", "name":"Existing Retained Member VIP", "value":""},
+           { "id":"90000666", "name":"Existing Unretained Member VIP", "value":""},
+           { "id":"90000668", "name":"Existing Retained Member Non-VIP", "value":""},
+           { "id":"90000670", "name":"Existing Unretained Member Non-VIP", "value":""},
+           { "id":"90000672", "name":"Winback", "value":""},
+           { "id":"90000674", "name":"Sleeping", "value":""},
+           { "id":"90000676", "name":"Lost", "value":""}
+                    ]
+        },
+        {
+            "id": "10202000007",
+            "type": "bar",
+            "title": "Member Tier",
+            "subtitle": "",
+            "items":[
+           { "id":"90000813", "name":"VIP(F>=2, M>=3500)", "value":""},
+           { "id":"90000815", "name":"High (F>=2, 3500>M>=1000)", "value":""},
+           { "id":"90000817", "name":"Mid (F>=2, 1000>M>=350)", "value":""},
+           { "id":"90000819", "name":"Low (F=1, M>=350)", "value":""},
+           { "id":"90000821", "name":"Other (M<350)", "value":""},
+           { "id":"90000823", "name":"Fleet (Other customer)", "value":""}
+                    ]
+        },
+        {
+            "id": "10202000008",
+            "type": "bar",
+            "title": "Purchase Stimulus",
+            "subtitle": "",
+            "items":[
+           { "id":"90000979", "name":"Product with Purchase", "value":""},
+           { "id":"90000981", "name":"Point Rewards", "value":""},
+           { "id":"90000983", "name":"Promotional Discount (PA)", "value":""}
+                    ]
+        }]
+}
