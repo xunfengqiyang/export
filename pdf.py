@@ -1,7 +1,14 @@
-from reportlab.platypus import SimpleDocTemplate , Paragraph , Spacer , Image
-from reportlab.lib.styles import getSampleStyleSheet
+#coding=utf-8
+from reportlab.graphics.shapes import Drawing , Rect
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate , Paragraph , Spacer , Image , Table , TableStyle , PageBreak
+from reportlab.lib.styles import getSampleStyleSheet , ParagraphStyle
 from reportlab.lib.units import inch, mm
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase.pdfmetrics import registerFont, registerFontFamily
+from reportlab.pdfbase.ttfonts import TTFont
+
 
 styles = getSampleStyleSheet()
 
@@ -33,7 +40,7 @@ def draw_header(c):
     c.drawString(0.9 * inch, 11.2 * inch, 'AI Segmentation')
 
 
-def getFirstPage(c, doc):
+def myFirstPage(c, doc):
     c.saveState()
 
     c.drawImage('./static/pdf/logo.jpg', 0.16667 * inch, 9 * inch, 3.58666 * inch, 0.88 * inch)
@@ -50,7 +57,6 @@ def getFirstPage(c, doc):
     c.drawString(144 * mm, 114 * mm, "-- Onfire Team")
 
     c.restoreState()
-    c.showPage()
 
 
 def myLaterPages(canvas , doc):
@@ -59,21 +65,91 @@ def myLaterPages(canvas , doc):
     canvas.restoreState()
 
 
+def getReportConf():
+    json_dir = './conf/report.json'
+    content = open(json_dir).read()
+    dict = eval(content)
+    return dict
+
+
+def getChartConf():
+    json_dir = './conf/profiling.json'
+    content = open(json_dir).read()
+    dict = eval(content)
+    return dict['chart'][0]
+
+
+def create_paragraph_style(name, font_name, **kwargs):
+    ttf_path = "C:/Windows/Fonts/{}.ttf"
+    family_args = {}  # store arguments for the font family creation
+    for font_type in ("normal", "bold", "italic", "boldItalic"):  # recognized font variants
+        if font_type in kwargs:  # if this type was passed...
+            font_variant = "{}-{}".format(font_name, font_type)  # create font variant name
+            registerFont(TTFont(font_variant, ttf_path.format(kwargs[font_type])))
+            family_args[font_type] = font_variant  # add it to font family arguments
+    registerFontFamily(font_name, **family_args)  # register a font family
+    return ParagraphStyle(name=name, fontName=font_name, fontSize=10, leading=12)
+
+
+def draw_content(Story, style):
+    configer = getReportConf()
+    # segment name
+    seg_name = Paragraph('<font color="#3f8f38" size=18>Segment name</font>' , style)
+    Story.append(seg_name)
+    Story.append(Spacer(1 , 0.2 * inch))
+
+    # searched text
+    search_text = "- " + configer["searchText"]
+    p_s_text = Paragraph('<font color="#444444" size=9>' + search_text + '</font>' , style)
+    Story.append(p_s_text)
+    Story.append(Spacer(1 , 0.2 * inch))
+
+    text_level = '<font color="#6ebb62" size=14>● </font>' + '<font color="#000000" size=14>' + configer[
+        'level'] + '</font>'
+    text_size = '<font color="#8baee4" size=14>● </font>' + '<font color="#000000" size=14>' + configer[
+        'size'] + '</font>'
+    txt_level_desc = '<font color="#000000" size=8>CONFIDENCE LEVEL</font>'
+    txt_size_desc = '<font color="#000000" size=8>AUDIENCE SIZE</font>'
+
+    data = [[Paragraph(text_level , style) , Paragraph(text_size , style)] ,
+            [Paragraph(txt_level_desc , style) , Paragraph(txt_size_desc , style)]]
+    t = Table(data)
+    t.setStyle(TableStyle([('TEXTCOLOR' , (0 , 1) , (1 , 1) , '#000000')]))
+    Story.append(t)
+
+
+def draw_chart(Story, style):
+    d = Drawing(0, 10)
+    Story.append(Spacer(1 , 0.3 * inch))
+
+    conf = getChartConf()
+
+    title = '<font color="#6ebb62" size=14>' + conf['title'] + '</font>'
+    Story.append(Paragraph(title, style))
+
+    d.add(Rect(0, 0, 520, 2, fillColor="#7fa1b4", strokeColor=colors.white))
+    Story.append(d)
+
+    image_chart = Image('./static/pdf/ShotChart.png' , 3.58 * inch , 2.68 * inch)
+    items = conf["items"]
+    i = 0
+    while i < items.length:
+        item = items[i]
+
+        i = i + 1
+
+
 def go():
-    doc = SimpleDocTemplate('phello.pdf')
+    doc = SimpleDocTemplate('phello.pdf', leftMargin=0.4*inch, rightMargin=0.4*inch)
 
-    Story= []
+    style = styles["Normal"]
+    Story = [PageBreak()]
 
+    draw_content(Story, style)
+    draw_chart(Story, style)
 
+    doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
 
-    Story = [Spacer(1, 0.1 * inch)]
-    for i in range(100):
-        bogustext = ("This is Paragraph number %s.  " % i) * 10
-        style = styles["Normal"]
-        p = Paragraph(bogustext , style)
-        Story.append(p)
-        Story.append(Spacer(1, 0.2 * inch))
-    doc.build(Story, onLaterPages=myLaterPages)
 
 
 if __name__ == "__main__":
