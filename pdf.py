@@ -1,6 +1,8 @@
 #coding=utf-8
+from __future__ import unicode_literals
 from reportlab.graphics.shapes import Drawing , Rect
 from reportlab.lib import colors
+from reportlab.lib.colors import Color
 from reportlab.platypus import SimpleDocTemplate , Paragraph , Spacer , Image , Table , TableStyle , PageBreak
 from reportlab.lib.styles import getSampleStyleSheet , ParagraphStyle
 from reportlab.lib.units import inch, mm
@@ -8,6 +10,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase.pdfmetrics import registerFont, registerFontFamily
 from reportlab.pdfbase.ttfonts import TTFont
+
+from pyecharts import Bar
+from pyecharts_snapshot.main import make_a_snapshot
 
 
 styles = getSampleStyleSheet()
@@ -118,6 +123,18 @@ def draw_content(Story, style):
     Story.append(t)
 
 
+def get_chart_image():
+    attr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    v1 = [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+    v2 = [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+    bar = Bar("Bar chart", "precipitation and evaporation one year")
+    bar.add("precipitation", attr, v1, mark_line=["average"], mark_point=["max", "min"])
+    bar.add("evaporation", attr, v2, mark_line=["average"], mark_point=["max", "min"])
+    bar.render('test.html')
+    make_a_snapshot('test.html','test.png')
+    return 'test.png'
+
+
 def draw_chart(Story, style):
     d = Drawing(0, 10)
     Story.append(Spacer(1 , 0.3 * inch))
@@ -127,16 +144,48 @@ def draw_chart(Story, style):
     title = '<font color="#6ebb62" size=14>' + conf['title'] + '</font>'
     Story.append(Paragraph(title, style))
 
-    d.add(Rect(0, 0, 520, 2, fillColor="#7fa1b4", strokeColor=colors.white))
+    d.add(Rect(0, 0, 526, 2, fillColor="#7fa1b4", strokeColor=colors.white))
     Story.append(d)
+    Story.append(Spacer(1 , 0.05 * inch))
 
-    image_chart = Image('./static/pdf/ShotChart.png' , 3.58 * inch , 2.68 * inch)
+    path_chart = get_chart_image()
+    image_chart = Image(path_chart , 5.88 * inch, 2.94 * inch)
     items = conf["items"]
-    i = 0
-    while i < items.length:
-        item = items[i]
+    row_count = len(items)
+    col_count = 3
 
-        i = i + 1
+    data = []
+    table_style = []
+
+    # grid_style = ('GRID', (0, 0), (8, 3), 0.5, colors.black)
+    # table_style.append(grid_style)
+
+    for row_index in range(0, row_count):
+        row_data = []
+        for col_index in range(0, col_count):
+            if ((col_index == 0) and (row_index == 0)):
+                row_data.append(image_chart)
+            elif col_index == 1:
+                tmpStr = "col:" + str(col_index) + " row:" + str(row_index)
+                row_data.append(tmpStr)
+            elif col_index == 2:
+                row_data.append("#")
+            else:
+                row_data.append("")
+        data.append(row_data)
+
+    other_style = [('VALIGN', (0, 0), (col_count - 1, row_count-1), 'MIDDLE'),
+                   ('ALIGN', (1, 0), (1, row_count-1), 'RIGHT'),
+                   ('ALIGN', (2, 0), (col_count - 1, row_count-1), 'LEFT'),
+                   ('SPAN', (0,0), (0, row_count-1))]
+    table_style = table_style + other_style
+
+    t = Table(data, style=table_style)
+    t._argW[0] = 5.88 * inch
+    t._argW[1] = 1.2 * inch
+    t._argW[2] = 0.2 * inch
+
+    Story.append(t)
 
 
 def go():
@@ -146,6 +195,7 @@ def go():
     Story = [PageBreak()]
 
     draw_content(Story, style)
+
     draw_chart(Story, style)
 
     doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPages)
